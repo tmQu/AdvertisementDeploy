@@ -1,0 +1,93 @@
+<div id="wrapper">
+  <!-- Sidebar -->
+    <ul
+        class="navbar-nav sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+        style="background: linear-gradient(45deg, #5c7ea1, #509177);"
+    >
+        <!-- Sidebar - Brand -->
+        {{> sidebarDepartment}}
+
+    </ul>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card border-0 shadow rounded-3 my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        <h5 class="card-title text-center mb-3 fw-light fs-5">
+                            Sửa Phương Thức Báo Cáo
+                        </h5>
+                        <form id = "editForm">
+                            <div class="form-floating mb-3">
+                                <input type="txt" class="form-control"
+                                    id="floatingInput" name="reportMethod"
+                                    placeholder disabled>
+                                <label for="floatingInput">{{this.oldData}}</label>
+                            </div>
+                            <div class="form-floating mb-5">
+                                <input type="txt" class="form-control"
+                                    id="reportMethod" name="reportMethod"
+                                    placeholder>
+                                <label for="reportMethod">Phương thức
+                                    mới</label>
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-login text-uppercase fw-bold"
+                                    type="submit">Sửa Đổi</button>
+                            </div>
+                        </form>
+                        <div class="d-grid mt-3">
+                            <a href="/reportMethods"
+                                class="btn btn-danger btn-login text-uppercase fw-bold">
+                                Quay Lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#section 'js'}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editForm = document.getElementById('editForm');
+
+        editForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const newReportMethod = document.getElementById('reportMethod').value;
+            fetch('/api/v1/reportMethods/' + '{{id}}', {
+                method: 'PATCH', 
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    reportMethod: newReportMethod,
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API sửa đổi');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+
+                window.location.href = '/reportMethods';
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+    });
+
+    function submitForm() {
+        document.getElementById('editForm').submit();
+    }
+</script>
+<script src="../../../static/js/department/reportMethods.js"></script>
+{{/section}}

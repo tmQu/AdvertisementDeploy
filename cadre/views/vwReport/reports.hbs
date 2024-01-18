@@ -1,0 +1,218 @@
+{{#section 'css'}}
+  <link rel='stylesheet' href='../../static/css/reports.css' />
+{{/section}}
+
+{{#section 'js'}}
+  {{! <script src='../../static/js/reports/reports.js'></script> }}
+  <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' rel='stylesheet' />
+
+  {{#if isSuperAdmin}}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Chưa xử lý', 'Đang xử lý', 'Đã xử lý'],
+        datasets: [{
+          label: 'Số lượng báo cáo',
+          data: [{{number_statistic.pending}}, {{number_statistic.inprogress}}, {{number_statistic.done}}],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 205, 86, 0.2)',
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 205, 86)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+  {{/if}}
+{{/section}}
+
+
+<div id="wrapper">
+  <!-- Sidebar -->
+  <ul
+    class="navbar-nav sidebar sidebar-dark accordion"
+    id="accordionSidebar"
+    style="background: linear-gradient(45deg, #5c7ea1, #509177);"
+  >
+    <!-- Sidebar - Brand -->
+    {{#if isSuperAdmin}}
+  {{> sidebarDepartment}}
+{{else}}
+  {{> sidebarWard}}
+{{/if}}
+
+  </ul>
+<div class='container mt-2'>
+  <div class='row'>
+
+    <div class='col-lg-12'>
+      <div class='main-box clearfix'>
+        <div class='table-responsive'>
+          <table class='table user-list'>
+            <thead>
+              <tr>
+                <th>
+                  <span class='text-center'>
+                    Bảng quảng cáo
+                  </span>
+                </th>
+                <th>
+                  <span class='text-center'>
+                    Thời gian
+                  </span>
+                </th>
+                <th class='text-center' id="status">
+                  <span>
+                    Trạng thái
+                  </span>
+                </th>
+                <th>
+                  <span class='text-center'>
+                    Email
+                  </span>
+                </th>
+                <th>
+                  &nbsp;
+                </th>
+              </tr>
+            </thead>
+            <tbody class='reports-list'>
+              {{#if reports}}
+                {{#each reports}}
+                  <tr>
+                    <td>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <img src='{{this.images.[0]}}' alt='' class='img-fluid' style="width: 100%; height: 100%;"/>
+                        </div>
+                        <div class="col-md-9 align-content-start">
+                          <a href='http://localhost:4000/reports/{{this._id}}' class='user-link'>
+                            {{this.method.reportMethod}}
+                          </a>
+                          <span class='user-subhead d-block mt-2'>
+                            {{this.boardLocation.addr.street_number}}, {{this.boardLocation.addr.route}}, {{this.boardLocation.addr.ward.ward}},
+                            {{this.boardLocation.addr.district.district}}, {{this.boardLocation.addr.city}}
+                          </span>
+                      </div>
+              
+                    </td>
+                    <td>
+                      {{this.createdAt}}
+                    </td>
+                    <td class='text-center'>
+                      {{#compare this.status '===' -1}}
+                        <span class='badge badge-pill badge-warning'>
+                          Chưa xử lý
+                        </span>
+                      {{else compare this.status '===' 0}}
+                        <span class='badge badge-pill badge-primary'>
+                          Đang xử lý
+                        </span>
+                      {{else compare this.status '===' 1}}
+                        <span class='badge badge-pill badge-success'>
+                          Đã xử lý
+                        </span>
+                      {{/compare}}
+                    </td>
+                    <td>
+                      <div class='d-flex flex-column'>
+                        <span class='user-subhead'>
+                          <b>{{this.sender.fullname}}</b>
+                        </span>
+                        <span class='user-subhead'>
+                          {{this.sender.email}}
+                        </span>
+                      </div>
+                    </td>
+                    <td >
+                      {{#if ../isSuperAdmin}}
+                      <a href='http://localhost:4000/reports/{{this._id}}' class='table-link'>
+                        <i class='bi bi-zoom-in'></i>
+
+                      <a href='#' class='table-link'>
+                        
+                      </a>
+                      {{else}}
+                      <a href='http://localhost:4000/reports/{{this._id}}' class='table-link'>
+                        <i class='bi bi-pencil-square'></i>
+                      </a>
+                      {{/if}}
+                    </td>
+                  </tr>
+                {{/each}}
+              {{else}}
+                <tr>
+                  <td colspan='5'>
+                    <div class='alert alert-danger'>
+                      Không tìm thấy báo cáo
+                    </div>
+                  </td>
+                </tr>
+              {{/if}}
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Pagination.handlebars -->
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            {{#if hasPreviousPage}}
+              <li class="page-item">
+                <a class="page-link" href="?page={{previousPage}}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {{/if}}
+
+            {{#paginate currentPage lastPage}}
+              {{#compare this.number '==' ../currentPage}}
+                <li class="page-item active">
+                  <a class="page-link" href="?page={{this.number}}">{{this.number}}</a>
+                </li>
+              {{else}}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{this.number}}">{{this.number}}</a>
+                </li>
+              {{/compare}}
+            {{/paginate}}
+
+
+            {{#if hasNextPage}}
+              <li class="page-item">
+                <a class="page-link" href="?page={{nextPage}}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            {{/if}}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>  
+  {{#if isSuperAdmin}}
+    <div class="row">
+      <div>
+          <canvas id="myChart"></canvas>
+      </div>
+    </div>
+  {{/if}}
+  
+</div>
+</div>

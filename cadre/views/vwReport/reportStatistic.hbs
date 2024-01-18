@@ -1,0 +1,187 @@
+{{#section 'css'}}
+  <link rel='stylesheet' href='../../static/css/reports.css' />
+{{/section}}
+
+{{#section 'js'}}
+  {{! <script src='../../static/js/reports/reports.js'></script> }}
+  <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' rel='stylesheet' />
+
+  {{#if isSuperAdmin}}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Chưa xử lý', 'Đang xử lý', 'Đã xử lý'],
+        datasets: [{
+          label: 'Số lượng báo cáo',
+          data: [100, 200, 300],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+  {{/if}}
+{{/section}}
+
+<div class='container'>
+  {{#if isSuperAdmin}}
+  <div class="row">
+      <canvas id="myChart"></canvas>
+  </div>
+  {{/if}}
+  <div class='row'>
+    <div class='col-lg-12'>
+      <div class='main-box clearfix'>
+        <div class='table-responsive'>
+          <table class='table user-list'>
+            <thead>
+              <tr>
+                <th>
+                  <span>
+                    Boards
+                  </span>
+                </th>
+                <th>
+                  <span>
+                    Created
+                  </span>
+                </th>
+                <th class='text-center'>
+                  <span>
+                    Status
+                  </span>
+                </th>
+                <th>
+                  <span>
+                    Email
+                  </span>
+                </th>
+                <th>
+                  &nbsp;
+                </th>
+              </tr>
+            </thead>
+            <tbody class='reports-list'>
+              {{#if reports}}
+                {{#each reports}}
+                  <tr>
+                    <td>
+                      <div class="row" style="width: 500px; height: 60px;">
+                        <div class="col-md-2">
+                          <img src='{{this.images.[0]}}' alt='' class='img-fluid' style="width: 100%; height: 100%;"/>
+                        </div>
+                        <div class="col-md-10 align-content-start">
+                          <a href='#' class='user-link'>
+                            {{this.method.reportMethod}}
+                          </a>
+                          <span class='user-subhead d-block mt-2'>
+                            {{this.boardLocation.addr.street_number}}, {{this.boardLocation.addr.route}}, {{this.boardLocation.addr.ward.ward}},
+                            {{this.boardLocation.addr.district.district}}, {{this.boardLocation.addr.city}}
+                          </span>
+                      </div>
+              
+                    </td>
+                    <td>
+                      {{this.createdAt}}
+                    </td>
+                    <td class='text-center'>
+                      {{#compare this.status '===' -1}}
+                        <span class='badge badge-pill badge-warning'>
+                          Chưa xử lý
+                        </span>
+                      {{else compare this.status '===' 0}}
+                        <span class='badge badge-pill badge-primary'>
+                          Đang xử lý
+                        </span>
+                      {{else compare this.status '===' 1}}
+                        <span class='badge badge-pill badge-success'>
+                          Đã xử lý
+                        </span>
+                      {{/compare}}
+                    </td>
+                    <td>
+                      <div class='d-flex flex-column'>
+                        <a class='text-bg-danger'>
+                          {{this.sender.fullname}}
+                        </a>
+                        <span class='user-subhead'>
+                          {{this.sender.email}}
+                        </span>
+                      </div>
+                    </td>
+                    <td style='width: 20%;'>
+                      <a href='#' class='table-link'>
+                        <span class='fa-stack'>
+                          <i class='fa fa-square fa-stack-2x'></i>
+                          <i class='fa fa-search-plus fa-stack-1x fa-inverse'></i>
+                        </span>
+                      </a>
+                      <a href='http://localhost:4000/reports/{{this._id}}' class='table-link'>
+                        <span class='fa-stack'>
+                          <i class='fa fa-square fa-stack-2x'></i>
+                          <i class='fa fa-pencil fa-stack-1x fa-inverse'></i>
+                        </span>
+                      </a>
+                      <a href='#' class='table-link danger'>
+                        <span class='fa-stack'>
+                          <i class='fa fa-square fa-stack-2x'></i>
+                          <i class='fa fa-trash-o fa-stack-1x fa-inverse'></i>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                {{/each}}
+              {{else}}
+                <tr>
+                  <td colspan='5'>
+                    <div class='alert alert-danger'>
+                      No reports found
+                    </div>
+                  </td>
+                </tr>
+              {{/if}}
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Pagination.handlebars -->
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            {{#if hasPreviousPage}}
+              <li class="page-item">
+                <a class="page-link" href="?page={{previousPage}}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {{/if}}
+
+            {{#paginate currentPage lastPage}}
+              <li class="page-item {{#if (eq this.number currentPage)}}active{{/if}}">
+                <a class="page-link" href="?page={{this.number}}">{{this.number}}</a>
+              </li>
+            {{/paginate}}
+
+
+            {{#if hasNextPage}}
+              <li class="page-item">
+                <a class="page-link" href="?page={{nextPage}}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            {{/if}}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

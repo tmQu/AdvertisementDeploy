@@ -1,0 +1,127 @@
+{{#section 'css'}}
+  <link rel='stylesheet' href='../../static/css/handleRequest/boardRequestList.css' />
+{{/section}}
+{{#section 'js'}}
+  {{!-- <script src='../../static/js/requests/boardRequestList.js'></script> --}}
+  <link
+    rel='stylesheet'
+    href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css'
+    integrity='sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA='
+    crossorigin='anonymous'
+  />
+{{/section}}
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+  <!-- Sidebar -->
+  <ul
+    class="navbar-nav sidebar sidebar-dark accordion"
+    id="accordionSidebar"
+    style="background: linear-gradient(45deg, #5c7ea1, #509177);"
+  >
+    {{> sidebarDepartment}}
+
+  </ul>
+
+  <!-- End of Sidebar -->
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 ">
+          <nav>
+            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link active" id="" role="tab" aria-controls="nav-home" aria-selected="true"><b>Thông tin</b></a>
+              
+            </div>
+          </nav>
+          <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+            <div class='tab-pane active' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
+              <div class='container-fluid mt-2'>
+                <!-- Thông tin bảng quảng cáo -->
+                <!--Tets-->
+                {{#if requests}}
+                  {{#each requests}}
+                    <div class='card shadow mb-2'>
+                      <div class='card-body'>
+                        <div class='row d-flex align-items-stretch'>
+                          <div class='col-lg-5 col-md-5 col-sm-6'>
+                            <div class='white-box text-center carousel-container'>
+                              {{#if this.imgBillboardLocation}}
+                                <div id="reportImageCarousel{{this._id}}" class="carousel slide" data-ride="carousel">
+                                  <div class="carousel-inner">
+                                    {{#each this.imgBillboardLocation}}
+                                      <div class="carousel-item {{#if @first}} active {{/if}}">
+                                        <img src="{{this}}" class="d-block carousel-img img-fluid" alt="Image {{@index}}">
+                                      </div>
+                                    {{/each}}
+                                  </div>
+                                  <button class="carousel-control-prev" type="button" data-bs-target="#reportImageCarousel{{this._id}}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                  </button>
+                                  <button class="carousel-control-next" type="button" data-bs-target="#reportImageCarousel{{this._id}}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                  </button>
+                                </div>
+                              {{else}}
+                                <img src='/static/img/default.jpg' class='img-fluid' alt='Board Location'/>
+                              {{/if}}
+                              <div class="button mt-2 d-flex justify-content-start">
+                                <a class='badge badge-pill badge-primary square-button edit-button' href="/boardLocationRequest/{{this._id}}/" aria-disabled="true">
+                                  <i class="bi bi-gear"></i> Xem xét
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- Thông tin điểm đặt quảng cáo -->
+                          <div class='col-lg-7 col-md-7 col-sm-6'>
+                            <h4 class='box-title'>
+                              <strong>{{this.advertisementForm.advertisementForm}}</strong>
+                            </h4>
+                            <p>
+                              {{this.addr.street_number}}, {{this.addr.route}}, {{this.addr.ward}},
+                              {{this.addr.district}}, {{this.addr.city}}
+                            </p>
+                            <p>
+                              Quy hoạch:
+                              {{#compare this.isPlan '===' false}}
+                                <span class='badge badge-pill badge-danger'>
+                                  Chưa quy hoạch
+                                </span>
+                              {{else}}
+                                <span class='badge badge-pill badge-success'>
+                                  Đã quy hoạch
+                                </span>
+                              {{/compare}}
+                            </p>
+                            <p>
+                              Phân loại:
+                              {{#each this.locationCategory}}
+                                <span class='badge badge-pill badge-primary'>
+                                  {{this.locationCategory}}
+                                </span>
+                              {{/each}}
+                            </p>                
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {{/each}}
+                {{else}}
+                  <div class='alert alert-warning' role='alert'>
+                    <strong>
+                      Không tìm thấy yêu cầu chỉnh sửa
+                    </strong>
+                  </div>
+                {{/if}}
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>           
+  </div>
+</div>
