@@ -31,12 +31,12 @@
                 <form action= 
                         {{#if isSuperAdmin}}
                           {{#if action.add}}
-                          'http://localhost:4000/api/v1/boardLocation/add'
+                          'https://advertisement-deploy.vercel.app/api/v1/boardLocation/add'
                           {{else}}
-                          'http://localhost:4000/api/v1/boardLocation/update/{{boardLocation._id}}'
+                          'https://advertisement-deploy.vercel.app/api/v1/boardLocation/update/{{boardLocation._id}}'
                           {{/if}}
                         {{else}}
-                          "http://localhost:4000/api/v1/changeBoardLocation/" 
+                          "https://advertisement-deploy.vercel.app/api/v1/changeBoardLocation/" 
                         {{/if}}
                   
                   method="POST" enctype="multipart/form-data" id="editBoardForm"
